@@ -11,24 +11,29 @@
             flex-wrap: wrap;
             justify-content: center;
             margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+            padding: 20px;
+            background-color: #121212;
+            color: #fff;
         }
         .subpage {
-            margin: 20px;
+            margin: 15px;
             text-align: center;
             overflow: hidden;
             border-radius: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background-color: #1e1e1e;
+            border: 2px solid transparent;
+            width: 180px;
         }
         .subpage:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            border-color: #6a0dad;
         }
         .subpage img {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             object-fit: cover;
             border-radius: 10px 10px 0 0;
             transition: transform 0.3s;
@@ -38,13 +43,13 @@
         }
         .subpage a {
             text-decoration: none;
-            color: #333;
+            color: #fff;
             font-weight: bold;
             display: block;
             padding: 10px;
-            background-color: #fff;
             border-radius: 0 0 10px 10px;
             transition: background-color 0.3s, color 0.3s;
+            background-color: #6a0dad;
         }
         .subpage a:hover {
             background-color: #333;
@@ -54,11 +59,22 @@
 </head>
 <body>
     <div class="subpage">
+        <a href="hex.html">
+            <img src="hex.png" alt="Hex/Dec/Float Converter">
+            <div>Hex/Dec/Float Converter</div>
+        </a>
+    </div>
+    <div class="subpage">
         <a href="basestrings.html">
-            <img src="basestrings.png" alt="BasesEncoders">
+            <img src="basestrings.png" alt="String Encoders Project">
             <div>String Encoders Project</div>
         </a>
     </div>
-    <!-- Add more subpages similarly -->
+    <div class="subpage">
+        <a href="colpick.html">
+            <img src="colpick.png" alt="ColorPicker">
+            <div>ColorPicker</div>
+        </a>
+    </div>
 </body>
 </html>

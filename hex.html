@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Converter</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1, h2 {
+            color: #BB86FC;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #E0E0E0;
+        }
+        button {
+            background-color: #FF0000;
+            border: none;
+            padding: 10px 20px;
+            color: #FFFFFF;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #CC0000;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #1E1E1E;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .container-wrapper {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+        p {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Converter</h1>
+
+    <div class="container-wrapper">
+        <div class="container">
+            <h2>Hex Converter</h2>
+            <label for="hexInput">Hex:</label>
+            <input type="text" id="hexInput" placeholder="Enter hex value">
+            <button onclick="convertHex()">Convert</button>
+            <p id="hexToDecResult"></p>
+            <p id="hexToFloatResult"></p>
+        </div>
+
+        <div class="container">
+            <h2>Decimal Converter</h2>
+            <label for="decimalInput">Decimal:</label>
+            <input type="text" id="decimalInput" placeholder="Enter decimal value">
+            <button onclick="convertDecimal()">Convert</button>
+            <p id="decToHexResult"></p>
+            <p id="decToFloatResult"></p>
+        </div>
+
+        <div class="container">
+            <h2>Float Converter</h2>
+            <label for="floatInput">Float:</label>
+            <input type="text" id="floatInput" placeholder="Enter float value">
+            <button onclick="convertFloat()">Convert</button>
+            <p id="floatToHexResult"></p>
+            <p id="floatToDecResult"></p>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='index.html'">Return To Projects Page</button>
+
+    <script>
+        function convertHex() {
+            let hexValue = document.getElementById('hexInput').value;
+            if (!hexValue) {
+                alert("Please enter a valid hex value");
+                return;
+            }
+            let decimalValue = parseInt(hexValue, 16);
+            let floatValue = hexToFloat(littleEndianHex(hexValue));
+
+            document.getElementById('hexToDecResult').innerText = `Decimal: ${decimalValue}`;
+            document.getElementById('hexToFloatResult').innerText = `Float: ${floatValue}`;
+        }
+
+        function hexToFloat(hex) {
+            let int = parseInt(hex, 16);
+            let buffer = new ArrayBuffer(4);
+            let view = new DataView(buffer);
+            view.setUint32(0, int, true);
+            return view.getFloat32(0, true);
+        }
+
+        function littleEndianHex(hex) {
+            let bytes = hex.match(/.{1,2}/g);
+            return bytes.reverse().join('');
+        }
+
+        function convertDecimal() {
+            let decimalValue = parseInt(document.getElementById('decimalInput').value);
+            if (isNaN(decimalValue)) {
+                alert("Please enter a valid decimal value");
+                return;
+            }
+            let hexValue = decimalValue.toString(16);
+            let floatValue = decimalToFloat(decimalValue);
+
+            document.getElementById('decToHexResult').innerText = `Hex: ${hexValue}`;
+            document.getElementById('decToFloatResult').innerText = `Float: ${floatValue}`;
+        }
+
+        function decimalToFloat(decimal) {
+            let buffer = new ArrayBuffer(4);
+            let view = new DataView(buffer);
+            view.setInt32(0, decimal, true);
+            return view.getFloat32(0, true);
+        }
+
+        function convertFloat() {
+            let floatValue = parseFloat(document.getElementById('floatInput').value);
+            if (isNaN(floatValue)) {
+                alert("Please enter a valid float value");
+                return;
+            }
+            let hexValue = floatToHex(floatValue);
+            let decimalValue = parseFloat(floatValue);
+
+            document.getElementById('floatToHexResult').innerText = `Hex: ${hexValue}`;
+            document.getElementById('floatToDecResult').innerText = `Decimal: ${decimalValue}`;
+        }
+
+        function floatToHex(float) {
+            let buffer = new ArrayBuffer(4);
+            let view = new DataView(buffer);
+            view.setFloat32(0, float, true);
+            return view.getUint32(0, true).toString(16);
+        }
+    </script>
+</body>
+</html>
