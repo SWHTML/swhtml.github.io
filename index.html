@@ -7,13 +7,11 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             margin: 0;
             padding: 20px;
             background-color: #121212;
             color: #fff;
+            display: flex;
             flex-direction: column;
             align-items: center;
         }
@@ -28,7 +26,7 @@
             width: 100%;
             padding: 12px 20px;
             border-radius: 20px;
-            border: 1px solid #daa520; /* Gold outline */
+            border: 1px solid #ffffff; /* White outline */
             background-color: #1e1e1e;
             color: #fff;
             font-size: 16px;
@@ -36,8 +34,15 @@
             transition: border-color 0.3s, box-shadow 0.3s;
         }
         .search-container input:focus {
-            border-color: #daa520;
-            box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .subpage-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px; /* Limit the width for better appearance */
+            margin: 0 auto;
         }
         .subpage {
             margin: 15px;
@@ -45,18 +50,17 @@
             overflow: hidden;
             border-radius: 10px;
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
             background-color: #2e2e2e; /* Dark background */
-            border: 2px solid #daa520; /* Gold outline */
+            border: 2px solid #ffffff; /* White outline */
             width: 200px;
-            max-width: 100%;
             position: relative;
             padding-bottom: 40px; /* Space for description */
         }
         .subpage:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-            border-color: #daa520;
+            border-color: #ffffff;
         }
         .subpage img {
             width: 100px;
@@ -78,10 +82,10 @@
             padding: 10px;
             border-radius: 0 0 10px 10px;
             transition: background-color 0.3s, color 0.3s;
-            background-color: #2e2e2e; /* Dark background */
+            background-color: #333; /* Dark background */
         }
         .subpage a:hover {
-            background-color: #333;
+            background-color: #444; /* Slightly lighter on hover */
             color: #fff;
         }
         .description {
@@ -102,10 +106,6 @@
             display: block;
         }
         @media (max-width: 600px) {
-            body {
-                flex-direction: column;
-                align-items: center;
-            }
             .subpage {
                 width: 100%;
                 margin: 10px 0;
@@ -117,27 +117,35 @@
     <div class="search-container">
         <input type="text" id="searchInput" onkeyup="filterSubpages()" placeholder="Search for projects...">
     </div>
-    <div class="subpage">
-        <a href="hex.html">
-            <div>Hex/Dec/Float Converter</div>
-            <img src="hex.png" alt="Hexadecimal, Decimal, Float Converter" loading="lazy">
-            <div class="description">Convert between hexadecimal, decimal, and floating point numbers easily.</div>
-        </a>
-    </div>
-    <div class="subpage">
-        <a href="basestrings.html">
-            <div>String Encoders Project</div>
-            <img src="basestrings.png" alt="String Encoders Project" loading="lazy">
-            <div class="description">Encode and decode strings in multi formats.</div>
-        </a>
-    </div>
-    <div class="subpage">
-        <a href="colpick.html">
-            <div>ColorPicker</div>
-            <img src="colpick.png" alt="Color Picker Tool" loading="lazy">
-            <div class="description">ColorPicker in ABGR format.</div>
-        </a>
-    </div>
+    <div class="subpage-container">
+        <div class="subpage">
+            <a href="hex.html">
+                <div>Hex/Dec/Float Converter</div>
+                <img src="hex.png" alt="Hexadecimal, Decimal, Float Converter" loading="lazy">
+                <div class="description">Convert between hexadecimal, decimal, and floating point numbers easily.</div>
+            </a>
+        </div>
+        <div class="subpage">
+            <a href="basestrings.html">
+                <div>String Encoders Project</div>
+                <img src="basestrings.png" alt="String Encoders Project" loading="lazy">
+                <div class="description">Encode and decode strings in multi formats.</div>
+            </a>
+        </div>
+        <div class="subpage">
+            <a href="colpick.html">
+                <div>ColorPicker</div>
+                <img src="colpick.png" alt="Color Picker Tool" loading="lazy">
+                <div class="description">ColorPicker in ABGR format.</div>
+            </a>
+        </div>
+        <div class="subpage">
+            <a href="hdprojects.html">
+                <div>HD Projects</div>
+                <img src="hd1.1.png" alt="HDProjects" loading="lazy">
+                <div class="description">HDProject Versions Re-Uploaded by @BN_LOS.</div>
+            </a>
+        </div>
     <script>
         function filterSubpages() {
             const input = document.getElementById('searchInput');
@@ -149,9 +157,9 @@
                 const description = subpage.querySelector('.description').innerText.toLowerCase();
                 
                 if (title.includes(filter) || description.includes(filter)) {
-                    subpage.style.display = '';
+                    subpage.style.display = ''; // Show the subpage
                 } else {
-                    subpage.style.display = 'none';
+                    subpage.style.display = 'none'; // Hide the subpage
                 }
             });
         }
