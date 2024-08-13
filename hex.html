@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Converter</title>
     <style>
         body {
-            background-color: #121212;
+            background: linear-gradient(135deg, #252525, #121212);
             color: #E0E0E0;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -14,14 +16,29 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            animation: fadeIn 1s;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         h1, h2 {
             color: #daa520;
+            text-shadow: 0 0 10px rgba(218, 165, 32, 0.8);
+            transition: text-shadow 0.3s ease;
         }
+
+        h1:hover, h2:hover {
+            text-shadow: 0 0 20px rgba(218, 165, 32, 1), 0 0 30px rgba(218, 165, 32, 0.5);
+        }
+
         label {
             display: block;
             margin: 10px 0 5px;
         }
+
         input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -30,12 +47,15 @@
             border-radius: 5px;
             background-color: #333;
             color: #E0E0E0;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
         }
+
         input[type="text"]:focus {
             border-color: #daa520;
             box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+            transform: scale(1.02);
         }
+
         button {
             background-color: #daa520;
             border: none;
@@ -43,41 +63,50 @@
             color: #121212;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+
         button:hover {
             background-color: #bb8f00;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
+
         .container {
             width: 100%;
             max-width: 400px;
             padding: 20px;
             background-color: #1E1E1E;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin: 0 10px;
-            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin: 20px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             border: 1px solid #daa520;
+            transition: transform 0.3s ease;
         }
+
         .container:hover {
             transform: translateY(-5px);
             border-color: #daa520;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
         }
-        .container-wrapper {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
+
         p {
             background-color: #333;
             padding: 10px;
             border-radius: 5px;
             margin: 5px 0;
             width: 100%;
+            transition: background-color 0.3s;
         }
+
+        p:hover {
+            background-color: #444;
+        }
+
         .back-button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -86,22 +115,30 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
         }
+
         .back-button:hover {
             background-color: #bb8f00;
             box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <h1>Converter</h1>
-
     <div class="container-wrapper">
         <div class="container">
             <h2>Hex Converter</h2>
             <label for="hexInput">Hex:</label>
-            <input type="text" id="hexInput" placeholder="Enter hex value">
+            <input type="text" id="hexInput" placeholder="Enter hex value" aria-describedby="hexError">
+            <p id="hexError" class="error" aria-live="assertive"></p>
             <button onclick="convertHex()">Convert</button>
             <p id="hexToDecResult"></p>
             <p id="hexToFloatResult"></p>
@@ -110,7 +147,8 @@
         <div class="container">
             <h2>Decimal Converter</h2>
             <label for="decimalInput">Decimal:</label>
-            <input type="text" id="decimalInput" placeholder="Enter decimal value">
+            <input type="text" id="decimalInput" placeholder="Enter decimal value" aria-describedby="decError">
+            <p id="decError" class="error" aria-live="assertive"></p>
             <button onclick="convertDecimal()">Convert</button>
             <p id="decToHexResult"></p>
             <p id="decToFloatResult"></p>
@@ -119,7 +157,8 @@
         <div class="container">
             <h2>Float Converter</h2>
             <label for="floatInput">Float:</label>
-            <input type="text" id="floatInput" placeholder="Enter float value">
+            <input type="text" id="floatInput" placeholder="Enter float value" aria-describedby="floatError">
+            <p id="floatError" class="error" aria-live="assertive"></p>
             <button onclick="convertFloat()">Convert</button>
             <p id="floatToHexResult"></p>
             <p id="floatToDecResult"></p>
@@ -129,10 +168,22 @@
     <button class="back-button" onclick="window.location.href='index.html'">Return To Projects Page</button>
 
     <script>
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+        }
+
+        function clearErrors() {
+            showError('hexError', '');
+            showError('decError', '');
+            showError('floatError', '');
+        }
+
         function convertHex() {
+            clearErrors();
             let hexValue = document.getElementById('hexInput').value;
-            if (!hexValue) {
-                alert("Please enter a valid hex value");
+            if (!/^([0-9A-Fa-f]{1,8})$/.test(hexValue)) {
+                showError('hexError', "Please enter a valid hex value (1-8 characters)");
                 return;
             }
             let decimalValue = parseInt(hexValue, 16);
@@ -156,9 +207,10 @@
         }
 
         function convertDecimal() {
+            clearErrors();
             let decimalValue = parseInt(document.getElementById('decimalInput').value);
             if (isNaN(decimalValue)) {
-                alert("Please enter a valid decimal value");
+                showError('decError', "Please enter a valid decimal value");
                 return;
             }
             let hexValue = decimalValue.toString(16);
@@ -176,9 +228,10 @@
         }
 
         function convertFloat() {
+            clearErrors();
             let floatValue = parseFloat(document.getElementById('floatInput').value);
             if (isNaN(floatValue)) {
-                alert("Please enter a valid float value");
+                showError('floatError', "Please enter a valid float value");
                 return;
             }
             let hexValue = floatToHex(floatValue);

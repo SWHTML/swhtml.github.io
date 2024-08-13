@@ -38,29 +38,27 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         .subpage-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 1000px; /* Limit the width for better appearance */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
+            gap: 15px 20px; /* Gap between items */
+            max-width: 1000px;
             margin: 0 auto;
         }
         .subpage {
-            margin: 15px;
+            position: relative; /* Position for the absolute description */
             text-align: center;
             overflow: hidden;
             border-radius: 10px;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
             background-color: #2e2e2e; /* Dark background */
             border: 2px solid #ffffff; /* White outline */
-            width: 200px;
-            position: relative;
-            padding-bottom: 40px; /* Space for description */
+            padding: 10px;
+            margin-bottom: 10px; /* Initial spacing */
         }
         .subpage:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-            border-color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
         }
         .subpage img {
             width: 100px;
@@ -81,35 +79,32 @@
             display: block;
             padding: 10px;
             border-radius: 0 0 10px 10px;
-            transition: background-color 0.3s, color 0.3s;
             background-color: #333; /* Dark background */
+            transition: background-color 0.3s;
         }
         .subpage a:hover {
             background-color: #444; /* Slightly lighter on hover */
-            color: #fff;
         }
         .description {
-            display: none;
-            background-color: #333;
-            padding: 10px;
-            border-radius: 10px;
             position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(50, 50, 50, 0.9); /* Semi-transparent background */
             color: #fff;
-            font-size: 12px;
-            z-index: 1;
+            font-size: 14px;
+            border-radius: 10px;
+            display: flex; /* Center align */
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease; /* Fade in/out */
+            backdrop-filter: blur(5px); /* Blur effect */
+            padding: 15px; /* Padding for description */
         }
         .subpage:hover .description {
-            display: block;
-        }
-        @media (max-width: 600px) {
-            .subpage {
-                width: 100%;
-                margin: 10px 0;
-            }
+            opacity: 1; /* Fade in effect */
         }
     </style>
 </head>
@@ -117,7 +112,7 @@
     <div class="search-container">
         <input type="text" id="searchInput" onkeyup="filterSubpages()" placeholder="Search for projects...">
     </div>
-    <div class="subpage-container">
+    <div class="subpage-container" id="subpageContainer">
         <div class="subpage">
             <a href="hex.html">
                 <div>Hex/Dec/Float Converter</div>
@@ -128,7 +123,7 @@
         <div class="subpage">
             <a href="basestrings.html">
                 <div>String Encoders Project</div>
-                <img src="basestrings.png" alt="String Encoders Project" loading="lazy">
+                <img src="basestrings.jpg" alt="String Encoders Project" loading="lazy">
                 <div class="description">Encode and decode strings in multi formats.</div>
             </a>
         </div>
@@ -146,6 +141,7 @@
                 <div class="description">HDProject Versions Re-Uploaded by @BN_LOS.</div>
             </a>
         </div>
+    </div>
     <script>
         function filterSubpages() {
             const input = document.getElementById('searchInput');
@@ -154,9 +150,8 @@
 
             subpages.forEach(subpage => {
                 const title = subpage.querySelector('a div').innerText.toLowerCase();
-                const description = subpage.querySelector('.description').innerText.toLowerCase();
                 
-                if (title.includes(filter) || description.includes(filter)) {
+                if (title.includes(filter)) {
                     subpage.style.display = ''; // Show the subpage
                 } else {
                     subpage.style.display = 'none'; // Hide the subpage

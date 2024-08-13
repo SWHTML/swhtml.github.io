@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>String Encoder/Decoder</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #121212;
             color: #e0e0e0;
             display: flex;
@@ -15,6 +16,7 @@
             height: 100vh;
             margin: 0;
         }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -29,83 +31,103 @@
             transform: translateY(-20px);
             opacity: 0;
             animation: fadeInUp 0.5s forwards;
-            border: 1px solid #daa520;
+            border: 1px solid #32CD32; /* Lime Green */
         }
+
         .section {
             width: 80%;
             margin-bottom: 20px;
         }
+
         .section h2 {
             margin-bottom: 20px;
-            color: #daa520;
-            animation: fadeIn 1s ease;
+            color: #32CD32; /* Lime Green */
+            animation: glow 1s infinite alternate;
         }
-        .section input[type="text"], .section select {
+
+        .section input[type="text"],
+        .section select {
             width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #daa520;
+            border: 1px solid #32CD32;
             border-radius: 5px;
             background-color: #333;
             color: #e0e0e0;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .section input[type="text"]:focus, .section select:focus {
-            border-color: #daa520;
-            box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+
+        .section input[type="text"]:focus,
+        .section select:focus {
+            border-color: #32CD32;
+            box-shadow: 0 0 10px rgba(50, 205, 50, 0.5); /* Lime Green Glow */
         }
+
         .section button {
             padding: 10px 20px;
-            background-color: #daa520;
-            color: #121212;
+            background-color: #000000; /* Lime Green */
+            color: #15ff00;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: bold;
         }
+
         .section button:hover {
-            background-color: #bb8f00;
+            background-color: #04ff00; /* Darker Green */
+            color: #000000;
             transform: scale(1.05);
         }
+
         .result {
             margin-top: 20px;
             text-align: left;
             opacity: 0;
             transition: opacity 0.5s ease;
         }
+
         .result h3 {
             margin-bottom: 10px;
-            color: #daa520;
+            color: #32CD32; /* Lime Green */
+            animation: glow 1s infinite alternate;
         }
+
         .result p {
             background: #1e1e1e;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid #daa520;
+            border: 1px solid #32CD32; /* Lime Green */
             animation: fadeIn 1s ease forwards;
         }
+
         .checkbox-container {
             text-align: left;
             margin-bottom: 20px;
         }
+
         .checkbox-container input[type="checkbox"] {
             margin-right: 10px;
         }
+
         .return-button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #daa520;
-            color: #121212;
+            background-color: #00912b; /* Lime Green */
+            color: #ffffff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             text-decoration: none;
             text-align: center;
+            font-weight: bold;
         }
+
         .return-button:hover {
-            background-color: #bb8f00;
+            background-color: #ffffff; /* Darker Green */
             transform: scale(1.05);
+            color: #000000;
         }
 
         @keyframes fadeInUp {
@@ -113,6 +135,7 @@
                 transform: translateY(20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -123,12 +146,24 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
         }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px rgba(50, 205, 50, 0.7), 0 0 10px rgba(50, 205, 50, 0.7);
+            }
+
+            100% {
+                text-shadow: 0 0 10px rgba(50, 205, 50, 1), 0 0 20px rgba(50, 205, 50, 1);
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="section">
@@ -170,10 +205,10 @@
 
             resultDiv.style.opacity = 0;
             setTimeout(() => {
-                resultDiv.innerHTML = '<h3>Encoded Results:</h3>' + 
-                                      Object.entries(encodedResults)
-                                            .map(([key, value]) => `<p><strong>${key}</strong>: ${value}</p>`)
-                                            .join('');
+                resultDiv.innerHTML = '<h3>Encoded Results:</h3>' +
+                    Object.entries(encodedResults)
+                    .map(([key, value]) => `<p><strong>${key}</strong>: ${value}</p>`)
+                    .join('');
                 resultDiv.style.opacity = 1;
             }, 300);
         };
@@ -206,7 +241,7 @@
                 }
                 decodeResultDiv.innerHTML = `<h3>Decoded Result (${encodingType}):</h3><p>${decodedResult}</p>`;
             } catch (e) {
-                decodeResultDiv.innerHTML = `<h3>Decoded Result (${encodingType}):</h3><p>Invalid ${encodingType} string</p>`;
+                decodeResultDiv.innerHTML = `<h3>Decoded Result (${encodingType}):</h3><p style="color: red;">Invalid ${encodingType} string</p>`;
             }
 
             decodeResultDiv.style.opacity = 0;
@@ -262,8 +297,8 @@
 
         const hexEncode = (input) => {
             return input.split('')
-                        .map(char => char.charCodeAt(0).toString(16).padStart(2, '0'))
-                        .join('');
+                .map(char => char.charCodeAt(0).toString(16).padStart(2, '0'))
+                .join('');
         };
 
         const hexDecode = (input) => {
@@ -307,4 +342,5 @@
         };
     </script>
 </body>
+
 </html>
