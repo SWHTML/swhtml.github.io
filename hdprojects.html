@@ -100,6 +100,16 @@
         .layout:nth-child(3) {
             background: #4a4a4a; /* Even lighter grey */
         }
+        .video-container {
+            margin-bottom: 20px; /* Space below the video */
+            text-align: center; /* Center the video */
+        }
+        video {
+            width: 80%; /* Adjust width for better appearance */
+            max-width: 600px; /* Max width limit */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 8px; /* Rounded corners for video */
+        }
     </style>
 </head>
 <body>
@@ -107,6 +117,15 @@
     <button class="return-button" onclick="window.location.href='index.html';">Return</button>
 
     <h1>HD Project Downloads</h1>
+
+    <div class="video-container">
+        <h2>Download Instruction - طريقة التنزيل</h2>
+        <video controls>
+            <source src="tutbuzz.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
     <div class="container">
         <div class="layout">
             <h2>HD Project (1.1)</h2>
