@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byte Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .container {
+            background: rgb(20, 20, 20);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #ff0000;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        button {
+            background-color: #0055ff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            width: 48%;
+            margin: 0 1%;
+        }
+        button:hover {
+            color: #000000;
+            background-color: #ffffff;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .result p {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-kb { background-color: #4CAF50; color: white; }
+        .result-bytes { background-color: #2196F3; color: white; }
+        .result-mb { background-color: #FFC107; color: white; }
+        .result-gb { background-color: #FF5722; color: white; }
+        .result-tb { background-color: #9C27B0; color: white; }
+        @media (max-width: 480px) {
+            button {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Byte Converter</h1>
+    <label for="value">Enter Value:</label>
+    <input type="number" id="value" placeholder="Value" min="0" step="any">
+
+    <label for="unit">Select Unit:</label>
+    <select id="unit">
+        <option value="MB">MB - Megabytes</option>
+        <option value="GB">GB - Gigabytes</option>
+        <option value="KB">KB - Kilobytes</option>
+        <option value="bytes">Bytes</option>
+        <option value="TB">TB - Terabytes</option>
+    </select>
+
+    <div style="display: flex; justify-content: space-between;">
+        <button onclick="convert()">Convert</button>
+        <button onclick="clearFields()">Clear</button>
+    </div>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+document.getElementById('value').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        convert();
+    }
+});
+
+function convert() {
+    const value = parseFloat(document.getElementById('value').value);
+    const unit = document.getElementById('unit').value;
+    const resultDiv = document.getElementById('result');
+
+    if (isNaN(value) || value < 0) {
+        resultDiv.innerHTML = '<p class="error">Please enter a valid non-negative number!</p>';
+        return;
+    }
+
+    let bytes = 0;
+
+    // Convert input to bytes
+    switch (unit) {
+        case 'MB':
+            bytes = value * 1024 * 1024;
+            break;
+        case 'GB':
+            bytes = value * 1024 * 1024 * 1024;
+            break;
+        case 'KB':
+            bytes = value * 1024;
+            break;
+        case 'bytes':
+            bytes = value;
+            break;
+        case 'TB':
+            bytes = value * 1024 * 1024 * 1024 * 1024;
+            break;
+    }
+
+    // Prepare results excluding the selected unit
+    let resultHtml = '<h3>Result</h3>';
+
+    const kbValue = unit !== 'KB' ? bytes / 1024 : null;
+    const bytesValue = unit !== 'bytes' ? Math.floor(bytes) : null;
+    const mbValue = unit !== 'MB' ? bytes / (1024 * 1024) : null;
+    const gbValue = unit !== 'GB' ? bytes / (1024 * 1024 * 1024) : null;
+    const tbValue = unit !== 'TB' ? bytes / (1024 * 1024 * 1024 * 1024) : null;
+
+    const results = [
+        { label: 'KB', value: kbValue, class: 'result-kb' },
+        { label: 'Bytes', value: bytesValue, class: 'result-bytes' },
+        { label: 'MB', value: mbValue, class: 'result-mb' },
+        { label: 'GB', value: gbValue, class: 'result-gb' },
+        { label: 'TB', value: tbValue, class: 'result-tb' }
+    ].filter(res => res.value !== null);
+
+    results.forEach(result => {
+        resultHtml += `<p class="${result.class}"> ${result.label}: ${result.value >= 1 ? Math.floor(result.value) : result.value.toFixed(2)} </p>`;
+    });
+
+    // Display results
+    resultDiv.innerHTML = resultHtml;
+}
+
+function clearFields() {
+    document.getElementById('value').value = '';
+    document.getElementById('unit').value = 'MB'; // Reset to default
+    document.getElementById('result').innerHTML = '';
+}
+</script>
+
+</body>
+</html>
