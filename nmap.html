@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normal Map Generator</title>
+    <style>
+        body { display: flex; flex-direction: row; justify-content: center; margin: 0; font-family: Arial, sans-serif; }
+        .container { display: flex; flex-direction: column; align-items: center; margin: 20px; }
+        canvas { border: 1px solid black; margin-top: 10px; }
+        input, select, button { margin: 5px; }
+        .preview { display: flex; flex-direction: column; align-items: center; }
+        .image-container { display: flex; flex-direction: column; align-items: center; }
+        img { max-width: 300px; }
+        .controls { margin: 20px; }
+        .settings { margin: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; }
+        h3 { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="preview">
+            <div class="image-container">
+                <h3>Original Texture</h3>
+                <img id="original-image" src="" alt="Original Texture" />
+            </div>
+            <div class="image-container">
+                <h3>Normal Map</h3>
+                <canvas id="normal-canvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3>Import | Export</h3>
+            <input type="file" id="file-input" accept=".dds, .tga, .png, .jpg, .jpeg" />
+            <label for="output-format">Export Format:</label>
+            <select id="output-format">
+                <option value="image/png">PNG</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/tga">TGA</option>
+                <option value="image/dds">DDS</option>
+            </select>
+            <button id="export-button">Export Normal Map</button>
+        </div>
+        
+        <div class="settings">
+            <h3>Settings</h3>
+            <label for="height-sensitivity">Height Sensitivity: <span id="height-sensitivity-value">1.0</span></label>
+            <input type="range" id="height-sensitivity" min="0.1" max="5" step="0.1" value="1.0" />
+            
+            <label for="smoothing">Smoothing: <span id="smoothing-value">1</span></label>
+            <input type="range" id="smoothing" min="0" max="10" step="1" value="1" />
+            
+            <label for="normal-intensity">Normal Intensity: <span id="normal-intensity-value">1.0</span></label>
+            <input type="range" id="normal-intensity" min="0.1" max="5" step="0.1" value="1.0" />
+        </div>
+    </div>
+    
+    <script src="https://threejs.org/build/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/TextureLoader.js"></script>
+    
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const originalImage = document.getElementById('original-image');
+        const normalCanvas = document.getElementById('normal-canvas');
+        const normalCtx = normalCanvas.getContext('2d');
+        const heightSensitivityInput = document.getElementById('height-sensitivity');
+        const smoothingInput = document.getElementById('smoothing');
+        const normalIntensityInput = document.getElementById('normal-intensity');
+        const outputFormatSelect = document.getElementById('output-format');
+        const exportButton = document.getElementById('export-button');
+        
+        const heightSensitivityValue = document.getElementById('height-sensitivity-value');
+        const smoothingValue = document.getElementById('smoothing-value');
+        const normalIntensityValue = document.getElementById('normal-intensity-value');
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage.src = e.target.result;
+                    generateNormalMap(img);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        heightSensitivityInput.addEventListener('input', (event) => {
+            heightSensitivityValue.textContent = event.target.value;
+            regenerateNormalMap();
+        });
+
+        smoothingInput.addEventListener('input', (event) => {
+            smoothingValue.textContent = event.target.value;
+            regenerateNormalMap();
+        });
+
+        normalIntensityInput.addEventListener('input', (event) => {
+            normalIntensityValue.textContent = event.target.value;
+            regenerateNormalMap();
+        });
+
+        exportButton.addEventListener('click', () => {
+            const format = outputFormatSelect.value;
+            exportNormalMap(format);
+        });
+
+        function regenerateNormalMap() {
+            const img = new Image();
+            img.src = originalImage.src;
+            img.onload = () => {
+                generateNormalMap(img);
+            };
+        }
+
+        function generateNormalMap(image) {
+            const width = image.width;
+            const height = image.height;
+
+            normalCanvas.width = width;
+            normalCanvas.height = height;
+
+            const normalData = new ImageData(width, height);
+            const data = normalData.data;
+
+            const albedoCanvas = document.createElement('canvas');
+            albedoCanvas.width = width;
+            albedoCanvas.height = height;
+            const albedoCtx = albedoCanvas.getContext('2d');
+            albedoCtx.drawImage(image, 0, 0);
+            const albedoImageData = albedoCtx.getImageData(0, 0, width, height).data;
+
+            const heightSensitivity = parseFloat(heightSensitivityInput.value);
+            const smoothing = parseInt(smoothingInput.value);
+            const normalIntensity = parseFloat(normalIntensityInput.value);
+
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    const idx = (y * width + x) * 4;
+
+                    const left = (y * width + (x - 1)) * 4;
+                    const right = (y * width + (x + 1)) * 4;
+                    const top = ((y - 1) * width + x) * 4;
+                    const bottom = ((y + 1) * width + x) * 4;
+
+                    // Calculate height differences
+                    const heightDiffX = (albedoImageData[right] - albedoImageData[left]) * heightSensitivity;
+                    const heightDiffY = (albedoImageData[bottom] - albedoImageData[top]) * heightSensitivity;
+
+                    const normal = [
+                        heightDiffX,
+                        heightDiffY,
+                        normalIntensity
+                    ];
+                    
+                    const length = Math.sqrt(normal[0] ** 2 + normal[1] ** 2 + normal[2] ** 2);
+                    normal[0] /= length;
+                    normal[1] /= length;
+                    normal[2] /= length;
+
+                    data[idx] = Math.floor((normal[0] * 0.5 + 0.5) * 255); // Red
+                    data[idx + 1] = Math.floor((normal[1] * 0.5 + 0.5) * 255); // Green
+                    data[idx + 2] = Math.floor((normal[2] * 0.5 + 0.5) * 255); // Blue
+                    data[idx + 3] = 255; // Alpha
+                }
+            }
+
+            normalCtx.putImageData(normalData, 0, 0);
+        }
+
+        function exportNormalMap(format) {
+            const dataURL = normalCanvas.toDataURL(format);
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = `normal_map.${format.split('/')[1]}`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
