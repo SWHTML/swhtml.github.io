@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Converter</title>
     <style>
+        /* Styles remain largely unchanged */
         body {
             background: linear-gradient(135deg, #252525, #121212);
             color: #E0E0E0;
@@ -27,11 +28,6 @@
         h1, h2 {
             color: #daa520;
             text-shadow: 0 0 10px rgba(218, 165, 32, 0.8);
-            transition: text-shadow 0.3s ease;
-        }
-
-        h1:hover, h2:hover {
-            text-shadow: 0 0 20px rgba(218, 165, 32, 1), 0 0 30px rgba(218, 165, 32, 0.5);
         }
 
         label {
@@ -39,7 +35,7 @@
             margin: 10px 0 5px;
         }
 
-        input[type="text"] {
+        input[type="text"], select {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -47,13 +43,6 @@
             border-radius: 5px;
             background-color: #333;
             color: #E0E0E0;
-            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
-        }
-
-        input[type="text"]:focus {
-            border-color: #daa520;
-            box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
-            transform: scale(1.02);
         }
 
         button {
@@ -63,14 +52,6 @@
             color: #121212;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover {
-            background-color: #bb8f00;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .container {
@@ -80,48 +61,6 @@
             background-color: #1E1E1E;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid #daa520;
-            transition: transform 0.3s ease;
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
-            border-color: #daa520;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        p {
-            background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 5px 0;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        p:hover {
-            background-color: #444;
-        }
-
-        .back-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #daa520;
-            color: #121212;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
-        }
-
-        .back-button:hover {
-            background-color: #bb8f00;
-            box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
-            transform: translateY(-2px);
         }
 
         .error {
@@ -133,64 +72,76 @@
 </head>
 <body>
     <h1>Converter</h1>
-    <div class="container-wrapper">
-        <div class="container">
-            <h2>Hex Converter</h2>
-            <label for="hexInput">Hex:</label>
-            <input type="text" id="hexInput" placeholder="Enter hex value" aria-describedby="hexError">
-            <p id="hexError" class="error" aria-live="assertive"></p>
-            <button onclick="convertHex()">Convert</button>
-            <p id="hexToDecResult"></p>
-            <p id="hexToFloatResult"></p>
-        </div>
-
-        <div class="container">
-            <h2>Decimal Converter</h2>
-            <label for="decimalInput">Decimal:</label>
-            <input type="text" id="decimalInput" placeholder="Enter decimal value" aria-describedby="decError">
-            <p id="decError" class="error" aria-live="assertive"></p>
-            <button onclick="convertDecimal()">Convert</button>
-            <p id="decToHexResult"></p>
-            <p id="decToFloatResult"></p>
-        </div>
-
-        <div class="container">
-            <h2>Float Converter</h2>
-            <label for="floatInput">Float:</label>
-            <input type="text" id="floatInput" placeholder="Enter float value" aria-describedby="floatError">
-            <p id="floatError" class="error" aria-live="assertive"></p>
-            <button onclick="convertFloat()">Convert</button>
-            <p id="floatToHexResult"></p>
-            <p id="floatToDecResult"></p>
-        </div>
+    <div class="container">
+        <h2>Unit Converter</h2>
+        <label for="unitSelect">Select Unit:</label>
+        <select id="unitSelect">
+            <option value="hex">Hex</option>
+            <option value="dec">Decimal</option>
+            <option value="float">Float</option>
+        </select>
+        <label for="inputValue">Value:</label>
+        <input type="text" id="inputValue" placeholder="Enter value">
+        <p id="error" class="error" aria-live="assertive"></p>
+        <button onclick="convert()">Convert</button>
+        <p id="result"></p>
     </div>
 
-    <button class="back-button" onclick="window.location.href='index.html'">Return To Projects Page</button>
-
     <script>
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.innerText = message;
+        function showError(message) {
+            document.getElementById('error').innerText = message;
         }
 
         function clearErrors() {
-            showError('hexError', '');
-            showError('decError', '');
-            showError('floatError', '');
+            showError('');
         }
 
-        function convertHex() {
+        function convert() {
             clearErrors();
-            let hexValue = document.getElementById('hexInput').value;
-            if (!/^([0-9A-Fa-f]{1,8})$/.test(hexValue)) {
-                showError('hexError', "Please enter a valid hex value (1-8 characters)");
-                return;
-            }
-            let decimalValue = parseInt(hexValue, 16);
-            let floatValue = hexToFloat(littleEndianHex(hexValue));
+            const inputValue = document.getElementById('inputValue').value.trim();
+            const selectedUnit = document.getElementById('unitSelect').value;
+            let result;
 
-            document.getElementById('hexToDecResult').innerText = `Decimal: ${decimalValue}`;
-            document.getElementById('hexToFloatResult').innerText = `Float: ${floatValue}`;
+            switch (selectedUnit) {
+                case 'hex':
+                    const hexValue = inputValue.startsWith('0x') ? inputValue.slice(2) : inputValue;
+                    if (!/^([0-9A-Fa-f]{1,8})$/.test(hexValue)) {
+                        showError("Please enter a valid hex value (1-8 characters)");
+                        return;
+                    }
+                    const decimalValue = parseInt(hexValue, 16);
+                    const floatValue = hexToFloat(littleEndianHex(hexValue));
+                    result = `Decimal: ${decimalValue}, Float: ${floatValue}`;
+                    break;
+
+                case 'dec':
+                    const decimalInput = parseInt(inputValue);
+                    if (isNaN(decimalInput)) {
+                        showError("Please enter a valid decimal value");
+                        return;
+                    }
+                    const hexFromDec = decimalInput.toString(16).toUpperCase();
+                    const floatFromDec = decimalToFloat(decimalInput);
+                    result = `Hex: ${hexFromDec}, Float: ${floatFromDec}`;
+                    break;
+
+                case 'float':
+                    const floatInput = parseFloat(inputValue);
+                    if (isNaN(floatInput)) {
+                        showError("Please enter a valid float value");
+                        return;
+                    }
+                    const hexFromFloat = floatToHex(floatInput);
+                    const decimalFromFloat = floatInput; 
+                    result = `Hex: ${hexFromFloat}, Decimal: ${decimalFromFloat}`;
+                    break;
+
+                default:
+                    showError("Invalid unit selected");
+                    return;
+            }
+
+            document.getElementById('result').innerText = result;
         }
 
         function hexToFloat(hex) {
@@ -206,20 +157,6 @@
             return bytes.reverse().join('');
         }
 
-        function convertDecimal() {
-            clearErrors();
-            let decimalValue = parseInt(document.getElementById('decimalInput').value);
-            if (isNaN(decimalValue)) {
-                showError('decError', "Please enter a valid decimal value");
-                return;
-            }
-            let hexValue = decimalValue.toString(16);
-            let floatValue = decimalToFloat(decimalValue);
-
-            document.getElementById('decToHexResult').innerText = `Hex: ${hexValue}`;
-            document.getElementById('decToFloatResult').innerText = `Float: ${floatValue}`;
-        }
-
         function decimalToFloat(decimal) {
             let buffer = new ArrayBuffer(4);
             let view = new DataView(buffer);
@@ -227,25 +164,11 @@
             return view.getFloat32(0, true);
         }
 
-        function convertFloat() {
-            clearErrors();
-            let floatValue = parseFloat(document.getElementById('floatInput').value);
-            if (isNaN(floatValue)) {
-                showError('floatError', "Please enter a valid float value");
-                return;
-            }
-            let hexValue = floatToHex(floatValue);
-            let decimalValue = parseFloat(floatValue);
-
-            document.getElementById('floatToHexResult').innerText = `Hex: ${hexValue}`;
-            document.getElementById('floatToDecResult').innerText = `Decimal: ${decimalValue}`;
-        }
-
         function floatToHex(float) {
             let buffer = new ArrayBuffer(4);
             let view = new DataView(buffer);
             view.setFloat32(0, float, true);
-            return view.getUint32(0, true).toString(16);
+            return view.getUint32(0, true).toString(16).toUpperCase();
         }
     </script>
 </body>

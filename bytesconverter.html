@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Byte Converter</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -68,22 +69,28 @@
             border-radius: 5px;
             max-height: 300px;
             overflow-y: auto;
+            background-color: #1a1a1a; /* General background */
         }
         .result p {
             padding: 10px;
             border-radius: 5px;
             margin: 5px 0;
-        }
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .result-kb { background-color: #4CAF50; color: white; }
         .result-bytes { background-color: #2196F3; color: white; }
         .result-mb { background-color: #FFC107; color: white; }
         .result-gb { background-color: #FF5722; color: white; }
         .result-tb { background-color: #9C27B0; color: white; }
+        .result-hex-little { background-color: #3F51B5; color: white; }
+        .result-hex-big { background-color: #FF9800; color: white; }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
         @media (max-width: 480px) {
             button {
                 width: 100%;
@@ -172,11 +179,48 @@ function convert() {
     ].filter(res => res.value !== null);
 
     results.forEach(result => {
-        resultHtml += `<p class="${result.class}"> ${result.label}: ${result.value >= 1 ? Math.floor(result.value) : result.value.toFixed(2)} </p>`;
+        resultHtml += `
+            <p class="${result.class}">
+                ${result.label}: ${result.value >= 1 ? Math.floor(result.value) : result.value.toFixed(2)}
+                <button onclick="copyToClipboard('${result.value}')">
+                    <i class="fa-regular fa-clipboard"></i>
+                </button>
+            </p>`;
     });
+
+    // Hexadecimal values
+    const hexLittleEndian = bytesToHex(bytes, true);
+    const hexBigEndian = bytesToHex(bytes, false);
+
+    resultHtml += `
+        <p class="result-hex-little">Hex (Little): ${hexLittleEndian} 
+            <button onclick="copyToClipboard('${hexLittleEndian}')">
+                <i class="fa-regular fa-clipboard"></i>
+            </button>
+        </p>
+        <p class="result-hex-big">Hex (Big): ${hexBigEndian} 
+            <button onclick="copyToClipboard('${hexBigEndian}')">
+                <i class="fa-regular fa-clipboard"></i>
+            </button>
+        </p>
+    `;
 
     // Display results
     resultDiv.innerHTML = resultHtml;
+}
+
+function bytesToHex(bytes, littleEndian) {
+    const hex = bytes.toString(16).padStart(8, '0').toUpperCase(); // 8 characters for 4 bytes
+    const formattedHex = hex.match(/.{1,2}/g).join(' '); // Split into pairs
+    return littleEndian ? formattedHex.split(' ').reverse().join(' ') : formattedHex;
+}
+
+function copyToClipboard(value) {
+    navigator.clipboard.writeText(value).then(() => {
+        alert("Copied to clipboard: " + value);
+    }).catch(err => {
+        console.error("Failed to copy: ", err);
+    });
 }
 
 function clearFields() {
