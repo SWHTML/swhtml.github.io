@@ -4,173 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWProjects</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .search-container {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .search-container input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 20px;
-            border: 1px solid #ffffff; /* White outline */
-            background-color: #1e1e1e;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .search-container input:focus {
-            border-color: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-        .subpage-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
-            gap: 15px 20px; /* Gap between items */
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .subpage {
-            position: relative; /* Position for the absolute description */
-            text-align: center;
-            overflow: hidden;
-            border-radius: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
-            background-color: #2e2e2e; /* Dark background */
-            border: 2px solid #ffffff; /* White outline */
-            padding: 10px;
-            margin-bottom: 10px; /* Initial spacing */
-        }
-        .subpage:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-        }
-        .subpage img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            margin: 10px auto;
-            display: block;
-            border-radius: 10px;
-            transition: transform 0.3s;
-        }
-        .subpage:hover img {
-            transform: scale(1.1);
-        }
-        .subpage a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-            display: block;
-            padding: 10px;
-            border-radius: 0 0 10px 10px;
-            background-color: #333; /* Dark background */
-            transition: background-color 0.3s;
-        }
-        .subpage a:hover {
-            background-color: #444; /* Slightly lighter on hover */
-        }
-        .description {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(50, 50, 50, 0.9); /* Semi-transparent background */
-            color: #fff;
-            font-size: 14px;
-            border-radius: 10px;
-            display: flex; /* Center align */
-            align-items: center;
-            justify-content: center;
-            opacity: 0; /* Initially hidden */
-            transition: opacity 0.3s ease, backdrop-filter 0.3s ease; /* Fade in/out */
-            backdrop-filter: blur(5px); /* Blur effect */
-            padding: 15px; /* Padding for description */
-        }
-        .subpage:hover .description {
-            opacity: 1; /* Fade in effect */
+            min-height: 100vh;
         }
     </style>
 </head>
-<body>
-    <div class="search-container">
-        <input type="text" id="searchInput" onkeyup="filterSubpages()" placeholder="Search for projects...">
-    </div>
-    <div class="subpage-container" id="subpageContainer">
-        <div class="subpage">
-            <a href="hex.html">
-                <div>Hex/Dec/Float Converter</div>
-                <img src="src/img/hex.png" alt="Hexadecimal, Decimal, Float Converter" loading="lazy">
-                <div class="description">Convert between hexadecimal, decimal, and floating point numbers easily.</div>
-            </a>
-        </div>
-        <div class="subpage">
-            <a href="basestrings.html">
-                <div>String Encoders Project</div>
-                <img src="src/img/basestrings.jpg" alt="String Encoders Project" loading="lazy">
-                <div class="description">Encode and decode strings in multi formats.</div>
-            </a>
-        </div>
-        <div class="subpage">
-            <a href="colpick.html">
-                <div>ColorPicker</div>
-                <img src="src/img/colpick.png" alt="Color Picker Tool" loading="lazy">
-                <div class="description">ColorPicker in ABGR format.</div>
-            </a>
-        </div>
-        <div class="subpage">
-            <a href="hdprojects.html">
-                <div>HD Projects</div>
-                <img src="src/img/hd1.1.png" alt="HDProjects" loading="lazy">
-                <div class="description">HDProject Versions Re-Uploaded by @BN_LOS.</div>
-            </a>
-        </div>
-        <div class="subpage">
-            <a href="bytesconverter.html">
-                <div>Bytes Converter</div>
-                <img src="src/img/bytesconverter.png" alt="Bytes Converter" loading="lazy">
-                <div class="description">Bytes Unit Converter.</div>
-            </a>
-        </div>
-        <div class="subpage">
-            <a href="nmap.html">
-                <div>Normal Map Generator</div>
-                <img src="src/img/nmap.jpg" alt="Normal Map Generator" loading="lazy">
-                <div class="description">Normal Map Generator.</div>
-            </a>
-        </div>
+<body class="bg-gray-900 text-white flex flex-col items-center p-5">
+    <header class="mb-8">
+        <h1 class="text-2xl text-center font-bold">SWProjects</h1>
+        <p class="text-lg mt-2">Projects made by @BN_LOS.</p>
+    </header>
 
+    <main class="w-full max-w-xl mb-5">
+        <input type="text" id="searchInput" onkeyup="debounceFilter()" placeholder="Search for projects..." class="input input-bordered w-full p-3 rounded-full bg-gray-800 text-white">
+    </main>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto" id="subpageContainer">
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="hex.html" class="block p-4">
+                <h2 class="text-lg font-bold">Hex/Dec/Float Converter</h2>
+                <img src="src/img/hex.png" alt="Hexadecimal, Decimal, Float Converter" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">Convert between hexadecimal, decimal, and floating point numbers easily.</p>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="basestrings.html" class="block p-4">
+                <h2 class="text-lg font-bold">String Encoders Project</h2>
+                <img src="src/img/basestrings.jpg" alt="String Encoders Project" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">Encode and decode strings in multiple formats.</p>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="colpick.html" class="block p-4">
+                <h2 class="text-lg font-bold">ColorPicker</h2>
+                <img src="src/img/colpick.png" alt="Color Picker Tool" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">ColorPicker in ABGR format.</p>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="hdprojects.html" class="block p-4">
+                <h2 class="text-lg font-bold">HD Projects</h2>
+                <img src="src/img/hd1.1.png" alt="HD Projects" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">HDProject Versions Re-Uploaded by @BN_LOS.</p>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="bytesconverter.html" class="block p-4">
+                <h2 class="text-lg font-bold">Bytes Converter</h2>
+                <img src="src/img/bytesconverter.png" alt="Bytes Converter" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">Bytes Unit Converter.</p>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-gray-800 text-center shadow-lg transition-transform transform hover:scale-105 mb-5">
+            <a href="nmap.html" class="block p-4">
+                <h2 class="text-lg font-bold">Normal Map Generator</h2>
+                <img src="src/img/nmap.jpg" alt="Normal Map Generator" loading="lazy" class="w-24 h-24 object-cover mx-auto rounded-lg">
+                <div class="card-body mt-2">
+                    <p class="text-sm">Normal Map Generator.</p>
+                </div>
+            </a>
+        </div>
     </div>
+
+    <footer class="w-full bg-gray-900 text-center py-5 mt-auto">
+        <p>© 2024 SWProjects. Created by @BN_LOS.</p>
+    </footer>
+
     <script>
+        let debounceTimer;
+
+        function debounceFilter() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(filterSubpages, 300);
+        }
+
         function filterSubpages() {
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
-            const subpages = document.querySelectorAll('.subpage');
+            const subpages = document.querySelectorAll('.card');
 
             subpages.forEach(subpage => {
-                const title = subpage.querySelector('a div').innerText.toLowerCase();
-                
-                if (title.includes(filter)) {
-                    subpage.style.display = ''; // Show the subpage
-                } else {
-                    subpage.style.display = 'none'; // Hide the subpage
-                }
+                const title = subpage.querySelector('h2').innerText.toLowerCase();
+                subpage.style.display = title.includes(filter) ? '' : 'none';
             });
         }
     </script>

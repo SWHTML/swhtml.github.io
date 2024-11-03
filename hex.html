@@ -3,145 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Converter</title>
+    <title>Numerial Units Converter | BN_LOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link id="favicon" rel="icon" href="favicon1.ico" />
     <style>
-        /* Styles remain largely unchanged */
         body {
-            background: linear-gradient(135deg, #252525, #121212);
-            color: #E0E0E0;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+        }
+        .content {
+            flex: 1; /* This makes the content area grow to fill available space */
+            display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            animation: fadeIn 1s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        h1, h2 {
-            color: #daa520;
-            text-shadow: 0 0 10px rgba(218, 165, 32, 0.8);
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-
-        input[type="text"], select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #daa520;
-            border-radius: 5px;
-            background-color: #333;
-            color: #E0E0E0;
-        }
-
-        button {
-            background-color: #daa520;
-            border: none;
-            padding: 10px 20px;
-            color: #121212;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: #1E1E1E;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .error {
-            color: red;
-            font-size: 0.8em;
-            margin: 5px 0;
         }
     </style>
 </head>
-<body>
-    <h1>Converter</h1>
-    <div class="container">
-        <h2>Unit Converter</h2>
-        <label for="unitSelect">Select Unit:</label>
-        <select id="unitSelect">
-            <option value="hex">Hex</option>
-            <option value="dec">Decimal</option>
-            <option value="float">Float</option>
-        </select>
-        <label for="inputValue">Value:</label>
-        <input type="text" id="inputValue" placeholder="Enter value">
-        <p id="error" class="error" aria-live="assertive"></p>
-        <button onclick="convert()">Convert</button>
-        <p id="result"></p>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-200">
+    <div class="content">
+        <div class="card w-full max-w-md bg-gray-900 shadow-lg">
+            <div class="card-body">
+                <h1 class="text-xl text-center mb-4">Units Converter (Hex | Decimal | Float)</h1>
+                <label class="label">Select Unit:</label>
+                <select id="unitSelect" class="select select-bordered w-full mb-4">
+                    <option value="hex">Hex</option>
+                    <option value="dec">Decimal</option>
+                    <option value="float">Float</option>
+                </select>
+                <label class="label">Value:</label>
+                <input type="text" id="inputValue" class="input input-bordered w-full mb-4" placeholder="Enter value">
+                <button id="convertBtn" class="btn btn-outline" onclick="convert()">Convert</button>
+                <p id="result" class="mt-4"></p>
+            </div>
+        </div>
     </div>
+    <footer class="footer footer-center bg-neutral">
+        <p>Created by @BN_LOS</p>
+    </footer>
+
+    <div id="toastContainer" class="fixed bottom-0 right-0 p-4"></div>
 
     <script>
-        function showError(message) {
-            document.getElementById('error').innerText = message;
+        // Favicon shuffling functionality
+        const favicons = ['src/img/unithexfavicon.png', 'src/img/unitdecfavicon.png', 'src/img/unitfloatfavicon.png'];
+        let currentFaviconIndex = 0;
+
+        function shuffleFavicon() {
+            currentFaviconIndex = (currentFaviconIndex + 1) % favicons.length;
+            document.getElementById('favicon').href = favicons[currentFaviconIndex];
         }
 
-        function clearErrors() {
-            showError('');
+        // Shuffle the favicon every 2 seconds
+        setInterval(shuffleFavicon, 2000);
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-success';
+            toast.innerHTML = `
+                <div class="alert alert-success shadow-lg">
+                    <div>
+                        <span>${message}</span>
+                    </div>
+                    <div class="flex-none">
+                        <button class="btn btn-sm btn-circle" onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                </div>`;
+            document.getElementById('toastContainer').appendChild(toast);
+
+            // Automatically remove the toast after a delay
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
         }
 
         function convert() {
-            clearErrors();
             const inputValue = document.getElementById('inputValue').value.trim();
             const selectedUnit = document.getElementById('unitSelect').value;
+            const convertBtn = document.getElementById('convertBtn');
+
+            // Disable button during processing
+            convertBtn.disabled = true;
+
             let result;
 
             switch (selectedUnit) {
                 case 'hex':
                     const hexValue = inputValue.startsWith('0x') ? inputValue.slice(2) : inputValue;
                     if (!/^([0-9A-Fa-f]{1,8})$/.test(hexValue)) {
-                        showError("Please enter a valid hex value (1-8 characters)");
+                        showToast("Please enter a valid hex value (1-8 characters)");
+                        convertBtn.disabled = false; // Re-enable button on error
                         return;
                     }
-                    const decimalValue = parseInt(hexValue, 16);
-                    const floatValue = hexToFloat(littleEndianHex(hexValue));
-                    result = `Decimal: ${decimalValue}, Float: ${floatValue}`;
+                    const decimalValueHex = parseInt(hexValue, 16);
+                    const floatValueHex = hexToFloat(littleEndianHex(hexValue));
+                    const littleEndianHexFormatted = hexValue.match(/.{1,2}/g).reverse().join(' '); // Reverse for little-endian
+                    const bigEndianHexFormatted = hexValue.match(/.{1,2}/g).join(' '); // Original for big-endian
+
+                    result = `Hex (Little): ${littleEndianHexFormatted}\n` +
+                             `Hex (Big): ${bigEndianHexFormatted}\n` +
+                             `Decimal: ${decimalValueHex}\n` +
+                             `Float: ${floatValueHex}`;
                     break;
 
                 case 'dec':
                     const decimalInput = parseInt(inputValue);
                     if (isNaN(decimalInput)) {
-                        showError("Please enter a valid decimal value");
+                        showToast("Please enter a valid decimal value");
+                        convertBtn.disabled = false; // Re-enable button on error
                         return;
                     }
-                    const hexFromDec = decimalInput.toString(16).toUpperCase();
+                    const hexFromDec = decimalInput.toString(16).toUpperCase().padStart(8, '0');
                     const floatFromDec = decimalToFloat(decimalInput);
-                    result = `Hex: ${hexFromDec}, Float: ${floatFromDec}`;
+                    const littleEndianHexFromDec = hexFromDec.match(/.{1,2}/g).reverse().join(' ');
+                    const bigEndianHexFromDec = hexFromDec.match(/.{1,2}/g).join(' ');
+
+                    result = `Hex (Little): ${littleEndianHexFromDec}\n` +
+                             `Hex (Big): ${bigEndianHexFromDec}\n` +
+                             `Decimal: ${decimalInput}\n` +
+                             `Float: ${floatFromDec}`;
                     break;
 
                 case 'float':
                     const floatInput = parseFloat(inputValue);
                     if (isNaN(floatInput)) {
-                        showError("Please enter a valid float value");
+                        showToast("Please enter a valid float value");
+                        convertBtn.disabled = false; // Re-enable button on error
                         return;
                     }
                     const hexFromFloat = floatToHex(floatInput);
                     const decimalFromFloat = floatInput; 
-                    result = `Hex: ${hexFromFloat}, Decimal: ${decimalFromFloat}`;
+                    const littleEndianHexFromFloat = hexFromFloat.match(/.{1,2}/g).reverse().join(' ');
+                    const bigEndianHexFromFloat = hexFromFloat.match(/.{1,2}/g).join(' ');
+
+                    result = `Hex (Little): ${littleEndianHexFromFloat}\n` +
+                             `Hex (Big): ${bigEndianHexFromFloat}\n` +
+                             `Decimal: ${decimalFromFloat}\n` +
+                             `Float: ${floatInput}`;
                     break;
 
                 default:
-                    showError("Invalid unit selected");
+                    showToast("Invalid unit selected");
+                    convertBtn.disabled = false; // Re-enable button on error
                     return;
             }
 
             document.getElementById('result').innerText = result;
+            showToast("Conversion successful!");
+
+            // Re-enable the button after processing
+            convertBtn.disabled = false;
         }
 
         function hexToFloat(hex) {
@@ -168,7 +180,7 @@
             let buffer = new ArrayBuffer(4);
             let view = new DataView(buffer);
             view.setFloat32(0, float, true);
-            return view.getUint32(0, true).toString(16).toUpperCase();
+            return view.getUint32(0, true).toString(16).toUpperCase().padStart(8, '0');
         }
     </script>
 </body>
