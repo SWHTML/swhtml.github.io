@@ -1,196 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="black">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>String Encoder/Decoder</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            max-width: 1200px;
-            width: 100%;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            transform: translateY(-20px);
-            opacity: 0;
-            animation: fadeInUp 0.5s forwards;
-            border: 1px solid #32CD32; /* Lime Green */
-        }
-
-        .section {
-            width: 80%;
-            margin-bottom: 20px;
-        }
-
-        .section h2 {
-            margin-bottom: 20px;
-            color: #32CD32; /* Lime Green */
-            animation: glow 1s infinite alternate;
-        }
-
-        .section input[type="text"],
-        .section select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #32CD32;
-            border-radius: 5px;
-            background-color: #333;
-            color: #e0e0e0;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .section input[type="text"]:focus,
-        .section select:focus {
-            border-color: #32CD32;
-            box-shadow: 0 0 10px rgba(50, 205, 50, 0.5); /* Lime Green Glow */
-        }
-
-        .section button {
-            padding: 10px 20px;
-            background-color: #000000; /* Lime Green */
-            color: #15ff00;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: bold;
-        }
-
-        .section button:hover {
-            background-color: #04ff00; /* Darker Green */
-            color: #000000;
-            transform: scale(1.05);
-        }
-
-        .result {
-            margin-top: 20px;
-            text-align: left;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .result h3 {
-            margin-bottom: 10px;
-            color: #32CD32; /* Lime Green */
-            animation: glow 1s infinite alternate;
-        }
-
-        .result p {
-            background: #1e1e1e;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #32CD32; /* Lime Green */
-            animation: fadeIn 1s ease forwards;
-        }
-
-        .checkbox-container {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-container input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
-        .return-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #00912b; /* Lime Green */
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .return-button:hover {
-            background-color: #ffffff; /* Darker Green */
-            transform: scale(1.05);
-            color: #000000;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px rgba(50, 205, 50, 0.7), 0 0 10px rgba(50, 205, 50, 0.7);
-            }
-
-            100% {
-                text-shadow: 0 0 10px rgba(50, 205, 50, 1), 0 0 20px rgba(50, 205, 50, 1);
-            }
-        }
-    </style>
+    <title>String Encoder/Decoder | @BN_LOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <div class="container">
-        <div class="section">
-            <h2>String Encoder</h2>
-            <input type="text" id="inputString" placeholder="Enter string to encode" onkeyup="handleKeyUp(event)">
-            <button onclick="encodeString()">Encode</button>
-            <div class="checkbox-container">
-                <input type="checkbox" id="realtimeEncode" onchange="toggleRealtimeEncode()">
-                <label for="realtimeEncode">Enable real-time encoding</label>
+<body class="bg-gray-900 text-gray-200 flex justify-center items-center h-screen">
+    <div class="flex flex-col items-center max-w-2xl w-full">
+        <div class="card bg-gray-800 shadow-lg w-full">
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card bg-gray-700">
+                        <div class="card-body">
+                            <h2 class="text-2xl mb-4">String Encoder</h2>
+                            <input type="text" id="inputString" placeholder="Enter string to encode" 
+                                   class="input input-bordered w-full mb-2" onkeyup="handleKeyUp(event)">
+                            <button class="btn btn-outline mb-2" onclick="encodeString()">Encode</button>
+                            <div class="form-control mb-4">
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" id="realtimeEncode" onchange="toggleRealtimeEncode()" class="checkbox" />
+                                    <span class="label-text">Enable real-time encoding</span>
+                                </label>
+                            </div>
+                            <div class="result" id="result"></div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-gray-700">
+                        <div class="card-body">
+                            <h2 class="text-2xl mb-4">Decode String</h2>
+                            <input type="text" id="decodeString" placeholder="Enter encoded string to decode" 
+                                   class="input input-bordered w-full mb-2" onkeyup="handleDecodeKeyUp(event)">
+                            <select id="encodingType" class="select select-bordered w-full mb-2">
+                                <option value="Base64">Base64</option>
+                                <option value="Base32">Base32</option>
+                                <option value="Base16">Base16</option>
+                                <option value="Ascii85">Ascii85</option>
+                                <option value="URLSafeBase64">URL Safe Base64</option>
+                            </select>
+                            <button class="btn btn-outline" onclick="decodeString()">Decode</button>
+                            <div class="result" id="decodeResult"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="result" id="result"></div>
         </div>
-        <div class="section">
-            <h2>Decode String</h2>
-            <input type="text" id="decodeString" placeholder="Enter encoded string to decode" onkeyup="handleDecodeKeyUp(event)">
-            <select id="encodingType">
-                <option value="Base64">Base64</option>
-                <option value="Base32">Base32</option>
-                <option value="Base16">Base16</option>
-                <option value="Ascii85">Ascii85</option>
-                <option value="URLSafeBase64">URL Safe Base64</option>
-            </select>
-            <button onclick="decodeString()">Decode</button>
-            <div class="result" id="decodeResult"></div>
-        </div>
-        <a href="index.html" class="return-button">Return to Main Page</a>
+
+        <a href="index.html" class="btn btn-outline mt-6">Return to Main Page</a>
     </div>
+
     <script>
         const encodeString = () => {
             const inputString = document.getElementById('inputString').value;
@@ -203,14 +65,10 @@
                 'URL Safe Base64': btoa(inputString).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
             };
 
-            resultDiv.style.opacity = 0;
-            setTimeout(() => {
-                resultDiv.innerHTML = '<h3>Encoded Results:</h3>' +
-                    Object.entries(encodedResults)
-                    .map(([key, value]) => `<p><strong>${key}</strong>: ${value}</p>`)
-                    .join('');
-                resultDiv.style.opacity = 1;
-            }, 300);
+            resultDiv.innerHTML = '<h3 class="text-lg font-bold">Encoded Results:</h3>' +
+                Object.entries(encodedResults)
+                .map(([key, value]) => `<p class="text-gray-300"><strong>${key}</strong>: ${value}</p>`)
+                .join('');
         };
 
         const decodeString = () => {
@@ -239,15 +97,10 @@
                     default:
                         throw new Error('Unknown encoding type');
                 }
-                decodeResultDiv.innerHTML = `<h3>Decoded Result (${encodingType}):</h3><p>${decodedResult}</p>`;
+                decodeResultDiv.innerHTML = `<h3 class="text-lg font-bold">Decoded Result (${encodingType}):</h3><p>${decodedResult}</p>`;
             } catch (e) {
-                decodeResultDiv.innerHTML = `<h3>Decoded Result (${encodingType}):</h3><p style="color: red;">Invalid ${encodingType} string</p>`;
+                decodeResultDiv.innerHTML = `<h3 class="text-lg font-bold">Decoded Result (${encodingType}):</h3><p class="text-red-500">Invalid ${encodingType} string</p>`;
             }
-
-            decodeResultDiv.style.opacity = 0;
-            setTimeout(() => {
-                decodeResultDiv.style.opacity = 1;
-            }, 300);
         };
 
         const handleKeyUp = (event) => {
