@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="black">
+<html lang="en" data-theme="luxury">
 
 <head>
     <meta charset="UTF-8">
@@ -7,14 +7,26 @@
     <title>String Encoder/Decoder | @BN_LOS</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .return-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+        }
+    </style>
+
 </head>
 
-<body class="bg-gray-900 text-gray-200 flex justify-center items-center h-screen">
+<body class="text-gray-200 flex justify-center items-center h-screen">
+    <div class="return-btn">
+        <a href=".." class="btn btn-outline">← Return</a>
+    </div>
+
     <div class="flex flex-col items-center max-w-2xl w-full">
-        <div class="card bg-gray-800 shadow-lg w-full">
+        <div class="card shadow-lg w-full">
             <div class="card-body">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card bg-gray-700">
+                    <div class="card">
                         <div class="card-body">
                             <h2 class="text-2xl mb-4">String Encoder</h2>
                             <input type="text" id="inputString" placeholder="Enter string to encode" 
@@ -30,7 +42,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-gray-700">
+                    <div class="card">
                         <div class="card-body">
                             <h2 class="text-2xl mb-4">Decode String</h2>
                             <input type="text" id="decodeString" placeholder="Enter encoded string to decode" 
@@ -49,8 +61,6 @@
                 </div>
             </div>
         </div>
-
-        <a href="index.html" class="btn btn-outline mt-6">Return to Main Page</a>
     </div>
 
     <script>

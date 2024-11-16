@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="luxury">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,16 +14,26 @@
             height: 100vh;
         }
         .content {
-            flex: 1; /* This makes the content area grow to fill available space */
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .return-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-200">
+<body class="text-gray-200">
+    <!-- Return Button -->
+    <div class="return-btn">
+        <a href=".." class="btn btn-outline">← Return</a>
+    </div>
+
     <div class="content">
-        <div class="card w-full max-w-md bg-gray-900 shadow-lg">
+        <div class="card w-full max-w-md shadow-lg">
             <div class="card-body">
                 <h1 class="text-xl text-center mb-4">Units Converter (Hex | Decimal | Float)</h1>
                 <label class="label">Select Unit:</label>
@@ -39,14 +49,10 @@
             </div>
         </div>
     </div>
-    <footer class="footer footer-center bg-neutral">
-        <p>Created by @BN_LOS</p>
-    </footer>
 
     <div id="toastContainer" class="fixed bottom-0 right-0 p-4"></div>
 
     <script>
-        // Favicon shuffling functionality
         const favicons = ['src/img/unithexfavicon.png', 'src/img/unitdecfavicon.png', 'src/img/unitfloatfavicon.png'];
         let currentFaviconIndex = 0;
 
@@ -55,7 +61,6 @@
             document.getElementById('favicon').href = favicons[currentFaviconIndex];
         }
 
-        // Shuffle the favicon every 2 seconds
         setInterval(shuffleFavicon, 2000);
 
         function showToast(message) {
@@ -72,7 +77,6 @@
                 </div>`;
             document.getElementById('toastContainer').appendChild(toast);
 
-            // Automatically remove the toast after a delay
             setTimeout(() => {
                 toast.remove();
             }, 3000);
@@ -83,7 +87,6 @@
             const selectedUnit = document.getElementById('unitSelect').value;
             const convertBtn = document.getElementById('convertBtn');
 
-            // Disable button during processing
             convertBtn.disabled = true;
 
             let result;
@@ -93,13 +96,13 @@
                     const hexValue = inputValue.startsWith('0x') ? inputValue.slice(2) : inputValue;
                     if (!/^([0-9A-Fa-f]{1,8})$/.test(hexValue)) {
                         showToast("Please enter a valid hex value (1-8 characters)");
-                        convertBtn.disabled = false; // Re-enable button on error
+                        convertBtn.disabled = false;
                         return;
                     }
                     const decimalValueHex = parseInt(hexValue, 16);
                     const floatValueHex = hexToFloat(littleEndianHex(hexValue));
-                    const littleEndianHexFormatted = hexValue.match(/.{1,2}/g).reverse().join(' '); // Reverse for little-endian
-                    const bigEndianHexFormatted = hexValue.match(/.{1,2}/g).join(' '); // Original for big-endian
+                    const littleEndianHexFormatted = hexValue.match(/.{1,2}/g).reverse().join(' ');
+                    const bigEndianHexFormatted = hexValue.match(/.{1,2}/g).join(' ');
 
                     result = `Hex (Little): ${littleEndianHexFormatted}\n` +
                              `Hex (Big): ${bigEndianHexFormatted}\n` +
@@ -111,7 +114,7 @@
                     const decimalInput = parseInt(inputValue);
                     if (isNaN(decimalInput)) {
                         showToast("Please enter a valid decimal value");
-                        convertBtn.disabled = false; // Re-enable button on error
+                        convertBtn.disabled = false;
                         return;
                     }
                     const hexFromDec = decimalInput.toString(16).toUpperCase().padStart(8, '0');
@@ -129,11 +132,11 @@
                     const floatInput = parseFloat(inputValue);
                     if (isNaN(floatInput)) {
                         showToast("Please enter a valid float value");
-                        convertBtn.disabled = false; // Re-enable button on error
+                        convertBtn.disabled = false;
                         return;
                     }
                     const hexFromFloat = floatToHex(floatInput);
-                    const decimalFromFloat = floatInput; 
+                    const decimalFromFloat = floatInput;
                     const littleEndianHexFromFloat = hexFromFloat.match(/.{1,2}/g).reverse().join(' ');
                     const bigEndianHexFromFloat = hexFromFloat.match(/.{1,2}/g).join(' ');
 
@@ -145,14 +148,13 @@
 
                 default:
                     showToast("Invalid unit selected");
-                    convertBtn.disabled = false; // Re-enable button on error
+                    convertBtn.disabled = false;
                     return;
             }
 
             document.getElementById('result').innerText = result;
             showToast("Conversion successful!");
 
-            // Re-enable the button after processing
             convertBtn.disabled = false;
         }
 
@@ -181,6 +183,10 @@
             let view = new DataView(buffer);
             view.setFloat32(0, float, true);
             return view.getUint32(0, true).toString(16).toUpperCase().padStart(8, '0');
+        }
+
+        function goBack() {
+            window.history.back();
         }
     </script>
 </body>

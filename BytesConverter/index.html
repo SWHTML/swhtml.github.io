@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="luxury">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +7,22 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-</head>
-<body class="bg-base-200 text-base-content flex items-center justify-center min-h-screen">
+    <style>
+        .return-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+        }
 
-<div class="container mx-auto p-5 bg-base-300 rounded-lg shadow-lg max-w-md">
+    </style>
+</head>
+<body class="text-base-content flex items-center justify-center min-h-screen">
+    <div class="return-btn">
+        <a href=".." class="btn btn-outline">← Return</a>
+    </div>
+
+
+<div class="container mx-auto p-5 rounded-lg shadow-lg max-w-md">
     <h1 class="text-3xl text-primary font-bold text-center mb-4">Byte Converter</h1>
     <label for="value" class="label">Enter Value:</label>
     <input type="number" id="value" class="input input-bordered w-full mb-4" placeholder="Value" min="0" step="any">
@@ -35,8 +47,7 @@
 
 <div id="toast-container" class="toast toast-end"></div>
 
-<!-- Drawer for history -->
-<div id="history-drawer" class="fixed top-0 left-0 w-80 bg-base-200 shadow-lg p-4 transition-transform transform -translate-x-full">
+<div id="history-drawer" class="fixed top-0 left-0 w-80 shadow-lg p-4 transition-transform transform -translate-x-full">
     <button class="btn btn-outline mb-4" onclick="toggleHistory()">Close</button>
     <h2 class="text-xl font-bold mb-4">Conversion History</h2>
     <div id="history-content" class="space-y-2"></div>
