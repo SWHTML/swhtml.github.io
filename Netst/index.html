@@ -9,27 +9,27 @@
 </head>
 <body class="flex justify-center items-center min-h-screen">
 
-  <div class="card w-1/2 p-8 rounded-lg shadow-lg text-center">
+  <div class="card w-3/4 p-12 rounded-lg shadow-lg text-center">
     <h2 class="text-2xl font-semibold mb-6">Network Speed Tester</h2>
     
-    <div class="flex justify-between mb-8">
+    <div class="flex justify-center mb-20 space-x-36">
       <div class="text-center">
         <h3 class="text-xl font-medium">Download</h3>
-        <div class="radial-progress" id="downloadProgress" style="--value:0;" data-size="10rem" data-thickness="2" role="progressbar">
+        <div class="radial-progress" id="downloadProgress" style="--value:0;" data-size="20rem" data-thickness="6" role="progressbar">
           0 MB/s
         </div>
       </div>
 
       <div class="text-center">
         <h3 class="text-xl font-medium">Upload</h3>
-        <div class="radial-progress" id="uploadProgress" style="--value:0;" data-size="10rem" data-thickness="2" role="progressbar">
+        <div class="radial-progress" id="uploadProgress" style="--value:0;" data-size="20rem" data-thickness="6" role="progressbar">
           0 MB/s
         </div>
       </div>
     </div>
     
     <div>
-      <button class="btn btn-outline w-full" id="startButton">Start</button>
+      <button class="btn btn-outline w-72" id="startButton">Start</button>
     </div>
   </div>
 
@@ -80,6 +80,11 @@
       };
 
       xhr.send();
+
+      setTimeout(() => {
+        const totalTime = (Date.now() - startTime) / 1000;
+        const downloadSpeed = (downloadBytes / 1024 / 1024) / totalTime;
+      }, 5000);
     }
 
     function testUploadSpeed() {
@@ -111,6 +116,11 @@
       };
 
       xhr.send(mockData);
+
+      setTimeout(() => {
+        const totalTime = (Date.now() - startTime) / 1000;
+        const uploadSpeed = (uploadSize / 1024 / 1024) / totalTime;
+      }, 5000);
     }
   </script>
 
