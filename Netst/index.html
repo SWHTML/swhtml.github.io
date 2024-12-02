@@ -9,20 +9,20 @@
 </head>
 <body class="flex justify-center items-center min-h-screen">
 
-  <div class="card w-96 p-8 rounded-lg shadow-lg text-center">
+  <div class="card w-1/2 p-8 rounded-lg shadow-lg text-center">
     <h2 class="text-2xl font-semibold mb-6">Network Speed Tester</h2>
     
-    <div class="mb-8">
-      <div class="mb-6">
+    <div class="flex justify-between mb-8">
+      <div class="text-center">
         <h3 class="text-xl font-medium">Download</h3>
-        <div class="radial-progress" id="downloadProgress" style="--value:0;" data-size="12rem" data-thickness="2" role="progressbar">
+        <div class="radial-progress" id="downloadProgress" style="--value:0;" data-size="10rem" data-thickness="2" role="progressbar">
           0 MB/s
         </div>
       </div>
 
-      <div>
+      <div class="text-center">
         <h3 class="text-xl font-medium">Upload</h3>
-        <div class="radial-progress" id="uploadProgress" style="--value:0;" data-size="12rem" data-thickness="2" role="progressbar">
+        <div class="radial-progress" id="uploadProgress" style="--value:0;" data-size="10rem" data-thickness="2" role="progressbar">
           0 MB/s
         </div>
       </div>
@@ -43,18 +43,20 @@
       downloadFile();
     });
 
-    function updateProgressBar(progressBar, value, type) {
+    function updateProgressBar(progressBar, value) {
       const speedInMBps = value.toFixed(2);
-      progressBar.style.setProperty('--value', (value / 1024));
+      const maxSpeed = 1000;
+      const progressValue = Math.min(value, maxSpeed);
+      progressBar.style.setProperty('--value', (progressValue / maxSpeed) * 100);
       progressBar.textContent = `${speedInMBps} MB/s`;
     }
 
     function downloadFile() {
-      const fileUrl = "https://github.com/SWHTML/swhtml.github.io/releases/download/Testfiles/1GB.bin";
+      const fileUrl = "1GB.bin";
       const startTime = Date.now();
       const xhr = new XMLHttpRequest();
-      const duration = 5000;
       let downloadBytes = 0;
+      let lastUpdateTime = startTime;
 
       xhr.open('GET', fileUrl, true);
       xhr.responseType = 'blob';
@@ -63,11 +65,13 @@
         if (event.lengthComputable) {
           const bytesDownloaded = event.loaded;
           downloadBytes = bytesDownloaded;
-          const timeElapsed = (Date.now() - startTime) / 1000;
-          const downloadSpeed = (bytesDownloaded / 1024 / 1024) / timeElapsed;
-          const progressInMB = downloadBytes / 1024 / 1024;
-          
-          updateProgressBar(downloadProgress, downloadSpeed, 'download');
+          const timeElapsed = (Date.now() - lastUpdateTime) / 1000;
+
+          if (timeElapsed > 1) {
+            const downloadSpeed = (bytesDownloaded / 1024 / 1024) / timeElapsed;
+            updateProgressBar(downloadProgress, downloadSpeed);
+            lastUpdateTime = Date.now();
+          }
         }
       };
 
@@ -76,31 +80,29 @@
       };
 
       xhr.send();
-
-      setTimeout(() => {
-        const totalTime = (Date.now() - startTime) / 1000;
-        const downloadSpeed = (downloadBytes / 1024 / 1024) / totalTime;
-      }, duration);
     }
 
     function testUploadSpeed() {
       const startTime = Date.now();
-      const duration = 5000;
-      const uploadSize = 50 * 1024 * 1024;
+      const uploadSize = 1024 * 1024 * 1024;
       const mockData = new Blob([new Array(uploadSize).join('a')], { type: 'text/plain' });
 
       const xhr = new XMLHttpRequest();
+      let lastUpdateTime = startTime;
+
       xhr.open('POST', '/upload', true);
       xhr.setRequestHeader('Content-Type', 'text/plain');
 
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           const bytesUploaded = event.loaded;
-          const timeElapsed = (Date.now() - startTime) / 1000;
-          const uploadSpeed = (bytesUploaded / 1024 / 1024) / timeElapsed;
-          const progressInMB = bytesUploaded / 1024 / 1024;
-          
-          updateProgressBar(uploadProgress, uploadSpeed, 'upload');
+          const timeElapsed = (Date.now() - lastUpdateTime) / 1000;
+
+          if (timeElapsed > 1) {
+            const uploadSpeed = (bytesUploaded / 1024 / 1024) / timeElapsed;
+            updateProgressBar(uploadProgress, uploadSpeed);
+            lastUpdateTime = Date.now();
+          }
         }
       };
 
@@ -109,11 +111,6 @@
       };
 
       xhr.send(mockData);
-
-      setTimeout(() => {
-        const totalTime = (Date.now() - startTime) / 1000;
-        const uploadSpeed = (uploadSize / 1024 / 1024) / totalTime;
-      }, duration);
     }
   </script>
 
