@@ -89,7 +89,7 @@
 
     function testUploadSpeed() {
       const startTime = Date.now();
-      const uploadSize = 1024 * 1024 * 1024;
+      const uploadSize = 1024 * 1024 * 10;
       const mockData = new Blob([new Array(uploadSize).join('a')], { type: 'text/plain' });
 
       const xhr = new XMLHttpRequest();
