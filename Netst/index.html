@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sunset">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netst | @BN_LOS</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex justify-center items-center min-h-screen">
+
+  <div class="card w-96 p-8 rounded-lg shadow-lg text-center">
+    <h2 class="text-2xl font-semibold mb-6">Network Speed Tester</h2>
+    
+    <div class="mb-8">
+      <div class="mb-6">
+        <h3 class="text-xl font-medium">Download</h3>
+        <div class="radial-progress" id="downloadProgress" style="--value:0;" data-size="12rem" data-thickness="2" role="progressbar">
+          0 MB/s
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-medium">Upload</h3>
+        <div class="radial-progress" id="uploadProgress" style="--value:0;" data-size="12rem" data-thickness="2" role="progressbar">
+          0 MB/s
+        </div>
+      </div>
+    </div>
+    
+    <div>
+      <button class="btn btn-outline w-full" id="startButton">Start</button>
+    </div>
+  </div>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const downloadProgress = document.getElementById('downloadProgress');
+    const uploadProgress = document.getElementById('uploadProgress');
+
+    startButton.addEventListener('click', () => {
+      startButton.disabled = true;
+      downloadFile();
+    });
+
+    function updateProgressBar(progressBar, value, type) {
+      const speedInMBps = value.toFixed(2);
+      progressBar.style.setProperty('--value', (value / 1024));
+      progressBar.textContent = `${speedInMBps} MB/s`;
+    }
+
+    function downloadFile() {
+      const fileUrl = "https://github.com/SWHTML/swhtml.github.io/releases/download/Testfiles/1GB.bin";
+      const startTime = Date.now();
+      const xhr = new XMLHttpRequest();
+      const duration = 5000;
+      let downloadBytes = 0;
+
+      xhr.open('GET', fileUrl, true);
+      xhr.responseType = 'blob';
+
+      xhr.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const bytesDownloaded = event.loaded;
+          downloadBytes = bytesDownloaded;
+          const timeElapsed = (Date.now() - startTime) / 1000;
+          const downloadSpeed = (bytesDownloaded / 1024 / 1024) / timeElapsed;
+          const progressInMB = downloadBytes / 1024 / 1024;
+          
+          updateProgressBar(downloadProgress, downloadSpeed, 'download');
+        }
+      };
+
+      xhr.onload = () => {
+        testUploadSpeed();
+      };
+
+      xhr.send();
+
+      setTimeout(() => {
+        const totalTime = (Date.now() - startTime) / 1000;
+        const downloadSpeed = (downloadBytes / 1024 / 1024) / totalTime;
+      }, duration);
+    }
+
+    function testUploadSpeed() {
+      const startTime = Date.now();
+      const duration = 5000;
+      const uploadSize = 50 * 1024 * 1024;
+      const mockData = new Blob([new Array(uploadSize).join('a')], { type: 'text/plain' });
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload', true);
+      xhr.setRequestHeader('Content-Type', 'text/plain');
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const bytesUploaded = event.loaded;
+          const timeElapsed = (Date.now() - startTime) / 1000;
+          const uploadSpeed = (bytesUploaded / 1024 / 1024) / timeElapsed;
+          const progressInMB = bytesUploaded / 1024 / 1024;
+          
+          updateProgressBar(uploadProgress, uploadSpeed, 'upload');
+        }
+      };
+
+      xhr.onload = () => {
+        startButton.disabled = false;
+      };
+
+      xhr.send(mockData);
+
+      setTimeout(() => {
+        const totalTime = (Date.now() - startTime) / 1000;
+        const uploadSpeed = (uploadSize / 1024 / 1024) / totalTime;
+      }, duration);
+    }
+  </script>
+
+</body>
+</html>
